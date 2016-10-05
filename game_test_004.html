@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: darkolivegreen;
+            margin: 0;
+        }
+        #board{
+            text-align: center;
+            margin: 0 auto;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="board">
+        <svg id="template" height="0" width="0" style="height:0">
+            <defs id="rg">
+                <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ffc0a0;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#555050;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#555050;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ffc0a0;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="grad7" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ffffc0;stop-opacity:1" />
+                    <stop offset="30%" style="stop-color:#fff0c0;stop-opacity:1" />
+                    <stop offset="80%" style="stop-color:#caa0a0;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="grad8" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ffc0a0;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ffffc0;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="helpgrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#66ff33;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#009900;stop-opacity:1" />
+                </linearGradient>
+                <g id="blackball">
+                    <circle cx="0" cy="0" r="45" stroke="#555050" stroke-width="1" fill="url(#grad5)" />
+                    <circle cx="0" cy="0" r="35" stroke="#ffc0a0" stroke-width="0" fill="url(#grad6)" />
+                </g>
+                <g id="whiteball">
+                    <circle cx="0" cy="0" r="45" stroke="#ffc0a0" stroke-width="1" fill="url(#grad7)" />
+                    <circle cx="0" cy="0" r="35" stroke="#ffc0a0" stroke-width="0" fill="url(#grad8)" />
+                </g>
+                <g id="helpball">
+                    <circle cx="0" cy="0" r ="30" stroke-width="0"  fill="url(#helpgrad)"  filter="url(#f1)" />
+                </g>
+                <g id="helppass">
+                    <polygon points="0,300 45,-51 -45,-51" style="fill:#ffffff;stroke:#000000;stroke-width:0" />
+                </g>
+                <g id="helppasstop">
+                    <polygon points="0,-300 45,51 -45,51" style="fill:#ffffff;stroke:#000000;stroke-width:0" />
+                </g>
+                <g id="text_cube1">
+                    <text id="1" x="0" y="50px" font-size="200px" font-weight="bold" stroke="white" stroke-width="5.5" fill="none">0:0</text>  
+                </g>
+            </defs>
+        </svg>
+    </div>
+</body>
+<script>
+    var active_point;
+	var cube_variants=[];
+    var o_svg;
+    var player;
+    var typeStep;
+    var d_cube1;
+    var d_cube2;
+	var steps;
+	var t_pass_variants = [];
+    var whiteRow = [[50,1095],[145,1095],[240,1095],[335,1095],[430,1095],[525,1095],[620,1095],[715,1095],[810,1095],[905,1095],[1000,1095],[1095,1095],[1095,50],[1000,50],[905,50],[810,50],[715,50],[620,50],[525,50],[430,50],[335,50],[240,50],[145,50],[50,50]];
+    var blackRow = [[1095,50],[1000,50],[905,50],[810,50],[715,50],[620,50],[525,50],[430,50],[335,50],[240,50],[145,50],[50,50],[50,1095],[145,1095],[240,1095],[335,1095],[430,1095],[525,1095],[620,1095],[715,1095],[810,1095],[905,1095],[1000,1095],[1095,1095]];
+    var places = [[50,50,0],[145,50,0],[240,50,0],[335,50,0],[430,50,0],[525,50,0],[620,50,0],[715,50,0],[810,50,0],[905,50,0],[1000,50,0],[1095,50,0],[50,1095,0],[145,1095,0],[240,1095,0],[335,1095,0],[430,1095,0],[525,1095,0],[620,1095,0],[715,1095,0],[810,1095,0],[905,1095,0],[1000,1095,0],[1095,1095,0]];
+    var SVGNS = "http://www.w3.org/2000/svg";
+    var XLNS = "http://www.w3.org/1999/xlink";
+    window.onload = function(){
+        typeStep = 0;
+        player=1;
+        alert('work');
+        o_svg = document.createElementNS(SVGNS, 'svg');
+        o_svg.setAttribute('id','main');
+        o_svg.setAttribute('width','1145');
+        o_svg.setAttribute('height','1145');
+        document.getElementById('board').appendChild(o_svg);
+        var rect = document.createElementNS(SVGNS,"rect");
+        rect.setAttribute("id", "desk");
+        rect.setAttribute("width", "1145");
+        rect.setAttribute("height", "1145");
+        rect.setAttribute("x", "0");
+        rect.setAttribute("y", "0");
+        rect.setAttribute("stroke", "#000");
+        rect.setAttribute("stroke-width", "0");
+        rect.setAttribute("fill", "#dcd9af");
+        o_svg.appendChild(rect);
+        var dt_cube = document.createElementNS(SVGNS,"use");
+        dt_cube.setAttribute("id", "cube1");
+        dt_cube.setAttributeNS(XLNS,"xlink:href", "#text_cube1");
+        dt_cube.setAttribute("x", "450");
+        dt_cube.setAttribute("y", "600");
+        dt_cube.addEventListener('click',cubeHandler);
+        o_svg.appendChild(dt_cube);
+        for (var i = 0; i < 24; i++) {
+            if (i < 12) {
+                createHelpPass();
+            }
+            else if (i>11){
+                createHelpPassTop();
+            }
+        }
+
+        function createHelpPass(){
+            var d_helppass = document.createElementNS(SVGNS,"use");
+            d_helppass.setAttribute("id", "helppass" + i);
+            d_helppass.setAttributeNS(XLNS,"xlink:href", "#helppass");
+            d_helppass.setAttribute("x", places[i][0]);
+            d_helppass.setAttribute("y", places[i][1]);
+            o_svg.appendChild(d_helppass); 
+        }
+        function createHelpPassTop(){
+            var d_helppass = document.createElementNS(SVGNS,"use");
+            d_helppass.setAttribute("id", "helppasstop" + i);
+            d_helppass.setAttributeNS(XLNS,"xlink:href", "#helppasstop");
+            d_helppass.setAttribute("x", places[i][0]);
+            d_helppass.setAttribute("y", places[i][1]);
+            o_svg.appendChild(d_helppass); 
+        }
+        function createBall(colortype,id,x,y){
+            var d_ball = document.createElementNS(SVGNS,"use");
+            d_ball.setAttribute("id", id);
+            d_ball.setAttributeNS(XLNS,"xlink:href", colortype);
+            d_ball.setAttribute("x", x);
+            d_ball.setAttribute("y", y);
+            d_ball.point = '';
+            o_svg.appendChild(d_ball);
+            d_ball.addEventListener('click',handler1);
+        }
+        for(var i=0; i<24;i++){
+            var o_g=document.createElementNS(SVGNS,'g');
+            o_g.setAttribute('id','point_'+i);
+            if (i < 12) {
+                o_g.x=1145-((i*95)+50);
+                o_g.y=50;
+                o_g.vert=1;
+                o_g.ind=i;
+            }
+            else if (i>11){
+                o_g.x=0+(((i-12)*95)+50);
+                o_g.y=1095;
+                o_g.vert=0;
+                o_g.ind=i-12;
+            }
+            o_g.capacity = 0;
+            o_g.addball = function(){
+                alert('add ball');
+            }
+            o_svg.appendChild(o_g);
+        }
+        for(var i=0;i<15;i++){
+            createBall('#whiteball','w'+i,0,0);
+            var t_ball = document.getElementById('w'+i);
+            var t_point = document.getElementById('point_0');
+            addBallToPoint(t_ball,t_point);
+            createBall('#blackball','b'+i,0,0);
+            var t_ball = document.getElementById('b'+i);
+            var t_point = document.getElementById('point_12');
+            addBallToPoint(t_ball,t_point);
+        }
+    }
+    function addBallToPoint(ball,point){
+        ball.setAttribute("x",point.x);
+        ball.point = point;
+        point.activeBall=ball;
+        if(point.vert==1){
+            ball.setAttribute('y',point.y+(30*point.capacity));
+        }
+        else{
+            ball.setAttribute('y',point.y-(30*point.capacity));
+        }
+        point.capacity=point.capacity+1;
+    }
+    function addHelpBallToPoint(point){
+        var x = point.x;
+
+        if(point.vert==1){
+            y=point.y + (30*point.capacity);
+//            ball.setAttribute('y',point.y+(30*point.capacity));
+        }
+        else{
+            y=point.y - (30*point.capacity);
+//            ball.setAttribute('y',point.y-(30*point.capacity));
+        }
+        createHelpBall(x,y,point);
+    }
+    function createHelpBall(x,y,point){
+        var d_helpball = document.createElementNS(SVGNS,"use");
+        d_helpball.setAttribute("class", "helpball");
+        d_helpball.setAttributeNS(XLNS,"xlink:href", "#helpball");
+        d_helpball.setAttribute("x", x);
+        d_helpball.setAttribute("y", y);
+        o_svg.appendChild(d_helpball); 
+        d_helpball.addEventListener('click',helpBallPull);
+        d_helpball.point = point;
+    }
+	function getVariants(cube_variants,t_point){
+        var t_ind=t_point.ind;
+        for(var i=0;i<cube_variants.length;i++){
+            t_pass_variants[i]=document.getElementById('point_' + (t_ind + cube_variants[i]));
+        }
+	}
+    function handler1(e) {
+		if (d_cube1==d_cube2){
+			steps = 4;
+			for(i=0;i<steps;i++){
+				cube_variants[i]=d_cube1 + d_cube1*i;
+			}
+		}
+		else{
+            steps = 2;
+			cube_variants[0]=d_cube1;
+			cube_variants[1]=d_cube2;
+			cube_variants[2]=d_cube1 + d_cube2;
+		}
+		if(typeStep==1){
+			var t_point = e.currentTarget.point;
+            active_point = t_point;
+			getVariants(cube_variants,t_point);
+			
+			
+			if((player==1)&&(t_point.activeBall.id.substr(0,1)=='w')){
+	//            alert(t_point.id + '---' + t_point.activeBall.id);
+				for(i=0;i<cube_variants.length;i++){
+					addHelpBallToPoint(t_pass_variants[i]);
+				}
+			}
+			else if((player==0)&&(t_point.activeBall.id.substr(0,1)=='b')){
+	//            alert(t_point.id + '---' + t_point.activeBall.id);
+				for(i=0;i<cube_variants.length;i++){
+					addHelpBallToPoint(t_pass_variants[i]);
+				}
+			}
+		}
+	}
+    function getrndcube() {
+		return parseInt((Math.random() * 6) + 1);
+	}
+    function cubeHandler(e) {
+		if(typeStep==0){
+			d_cube1=getrndcube();
+			d_cube2=getrndcube();
+			document.getElementById("1").innerHTML = d_cube1 + ":" + d_cube2;
+			typeStep = 1;
+		}
+	}
+    function helpBallPull(e){
+        var t_point=e.currentTarget.point;
+        var t_ball = active_point.activeBall;
+        addBallToPoint(t_ball,t_point);
+        e.currentTarget.parentNode.removeChild(e.currentTarget);
+    }
+</script>
+</html>
