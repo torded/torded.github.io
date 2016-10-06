@@ -189,11 +189,9 @@
 
         if(point.vert==1){
             y=point.y + (30*point.capacity);
-//            ball.setAttribute('y',point.y+(30*point.capacity));
         }
         else{
             y=point.y - (30*point.capacity);
-//            ball.setAttribute('y',point.y-(30*point.capacity));
         }
         createHelpBall(x,y,point);
     }
@@ -233,13 +231,11 @@
 			
 			
 			if((player==1)&&(t_point.activeBall.id.substr(0,1)=='w')){
-	//            alert(t_point.id + '---' + t_point.activeBall.id);
 				for(i=0;i<cube_variants.length;i++){
 					addHelpBallToPoint(t_pass_variants[i]);
 				}
 			}
 			else if((player==0)&&(t_point.activeBall.id.substr(0,1)=='b')){
-	//            alert(t_point.id + '---' + t_point.activeBall.id);
 				for(i=0;i<cube_variants.length;i++){
 					addHelpBallToPoint(t_pass_variants[i]);
 				}
