@@ -1,0 +1,10 @@
+body {
+    //background: url(body.jpg);
+    background-size: 190%;
+    background-position: 50% 0%;
+    background-color: burlywood;
+}
+
+.desck {
+    border: 1px solid;
+}
