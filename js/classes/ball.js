@@ -8,8 +8,25 @@ function Ball(optiions) {
     this.id = optiions.id;
     this.positionX = null;
     this.positionY = null;
-    this.makePass = function (optiions) {
-        return "OPANA";
+    this.makePass = function (way) {
+        delete this.way.balls[this.way.balls.length - 1];
+        way.balls.push(this);
+        this.way = way;
+        for(var i = 0; i < this.game.desck.ways.length; i++){
+            if(this.game.desck.ways[i].helpBall !== null){
+                this.game.desck.ways[i].helpBall.el.remove();
+                this.game.desck.ways[i].helpBall = null;
+            }
+        }
+        this.rerender(way);
+        for(var i = 0; i < this.possibleSteps.length; i++){
+            if(this.possibleSteps[i].way === way){
+                for(var k = 0; k < this.possibleSteps[i].variants.length; k++){
+                    this.possibleSteps[i].variants[k].enable = false;
+                }
+            }
+        }
+
     };
     this.render = function (way) {
         this.game = way.game;
@@ -51,9 +68,11 @@ function Ball(optiions) {
             if(this.game.stepUsers = colorStep){
                 console.log(this);
                 this.game.getPossibleSteps(this);
+                this.game.renderPossibleSteps(this);
             }
 
         }
 
-    }
+    };
+
 }

@@ -4,6 +4,7 @@ function Way(options) {
     this.id = options.id;
     this.isUp = options.isUp;
     this.balls = [];
+    this.helpBall = null;
     this.width = null;
     this.height = null;
     this.whiteWay = options.whiteWay;
@@ -12,6 +13,27 @@ function Way(options) {
     this.positionY = options.positionY;
     this.checkToPass = function (ball) {
         return true;
+    };
+    this.getCoordinatesForHelpBall = function(helpBall){
+        if(this.balls.length === 0){
+            helpBall.positionX = this.positionX + (this.width / 2) - helpBall.radius;
+            if (this.isUp) {
+                helpBall.positionY = this.positionY + (this.width / 2) - helpBall.radius;
+            }
+            else {
+                helpBall.positionY = this.positionY + this.height - (this.width / 2) - helpBall.radius;
+            }
+        }
+        else{
+            helpBall.positionX = this.positionX + (this.width / 2) - helpBall.radius;
+            if (this.isUp) {
+                helpBall.positionY = this.positionY + (this.width / 2) - helpBall.radius + this.balls[0].radius * this.balls.length;
+            }
+            else {
+                helpBall.positionY = this.positionY + this.height - (this.width / 2) - ball.radius - this.balls[0].radius * this.balls.length;
+            }
+        }
+
     };
     this.getCoordinates = function (ball) {
         var include = false;
@@ -93,6 +115,28 @@ function Way(options) {
         for (var i = 0; i < this.balls.length; i++) {
             this.balls[i].rerender(this);
         }
+        if(this.helpBall !== null){
+            this.helpBall.rerender(this);
+        }
 
-    }
+    };
+    this.getPossibilityForStep = function(ball) {
+        if(this.balls.length === 0){
+            return true;
+        }
+        else{
+            var tempColor = this.balls[this.balls.length - 1].color;
+            if(ball.color === tempColor){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    };
+    this.renderHelpPoint = function(ball){
+      var helpPoint = new helpBall();
+      helpPoint.render(this, ball);
+      this.helpBall = helpPoint;
+    };
 }

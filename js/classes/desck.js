@@ -3,6 +3,7 @@ function Desck(options) {
     this.left = null;
     this.top = null;
     this.ways = null;
+    this.blackWays = null;
     this.balls = null;
     this.dice = null;
     this.el = options.el;
@@ -55,6 +56,16 @@ function Desck(options) {
             }
             way.render(this);
             this.ways[i] = way;
+        }
+
+        this.blackWays = [];
+        for(var i = 0; i <24; i++){
+            if(i < 12){
+                this.blackWays.push(this.ways[i + 12]);
+            }
+            else{
+                this.blackWays.push(this.ways[i - 12]);
+            }
         }
         this.balls = [];
         for (var i = 0; i < 30; i++) {
